@@ -51,7 +51,7 @@ pipeline {
 
     post {
         success {
-            echo "✅ Terraform ${params.ACTION} completed successfully!"
+            echo "✅ Terraform ${params.ACTION} completed successfully!!"
         }
         failure {
             echo "❌ Terraform ${params.ACTION} failed."
