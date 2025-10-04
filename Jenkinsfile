@@ -29,6 +29,11 @@ pipeline {
                     sh 'terraform plan'
             }
         }
+        stage('Created file'){
+            steps {
+                sh 'touch file18'
+            }
+        }
         stage('Terraform apply/destroy') {
             steps {
                     sh "terraform ${params.ACTION} -auto-approve"
