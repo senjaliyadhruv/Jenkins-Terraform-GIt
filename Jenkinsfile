@@ -1,44 +1,64 @@
 pipeline {
     agent any
+
     parameters {
-        string(name: 'ACTION', defaultValue: 'apply', description: 'Terraform action: apply or destroy')
+        choice(name: 'ACTION', choices: ['plan', 'apply', 'destroy'], description: 'Terraform action')
     }
+
+    triggers {
+        githubPush()  // webhook trigger
+    }
+
+    environment {
+        TF_IN_AUTOMATION = "true"
+    }
+
     stages {
-        stage('Checkout from Git') {
+        stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/senjaliyadhruv/Jenkins-Terraform-GIt.git'
+                git branch: 'main',
+                    credentialsId: 'github-creds',
+                    url: 'https://github.com/senjaliyadhruv/Jenkins-Terraform-GIt.git'
             }
         }
-        stage('Terraform version') {
+
+        stage('Terraform Init') {
             steps {
-                sh 'terraform --version'
+                sh 'terraform init -input=false'
             }
         }
-        stage('Terraform init') {
+
+        stage('Terraform Validate') {
             steps {
-                sh 'terraform init'
+                sh 'terraform validate'
             }
         }
-        stage('Terraform validate') {
+
+        stage('Terraform Plan/Apply/Destroy') {
             steps {
-                    sh 'terraform validate'
+                script {
+                    if (params.ACTION == "plan") {
+                        sh 'terraform plan -input=false'
+                    } else if (params.ACTION == "apply") {
+                        sh 'terraform apply -auto-approve -input=false'
+                    } else if (params.ACTION == "destroy") {
+                        sh 'terraform destroy -auto-approve -input=false'
+                    }
+                }
             }
         }
-        stage('Terraform plan') {
-            steps {
-                    sh 'terraform plan'
-            }
+    }
+
+    post {
+        success {
+            echo "✅ Terraform ${params.ACTION} completed successfully!"
         }
-        stage('Created file'){
-            steps {
-                sh 'touch file18'
-            }
+        failure {
+            echo "❌ Terraform ${params.ACTION} failed."
         }
-        stage('Terraform apply/destroy') {
-            steps {
-                    sh "terraform ${params.ACTION} -auto-approve"
-            }
+        always {
+            echo "Pipeline finished. Cleaning up workspace..."
+            deleteDir()
         }
     }
 }
-
