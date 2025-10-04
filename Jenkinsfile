@@ -5,14 +5,6 @@ pipeline {
         choice(name: 'ACTION', choices: ['plan', 'apply', 'destroy'], description: 'Terraform action')
     }
 
-    triggers {
-        githubPush()  // webhook trigger
-    }
-
-    environment {
-        TF_IN_AUTOMATION = "true"
-    }
-
     stages {
         stage('Checkout') {
             steps {
@@ -24,7 +16,7 @@ pipeline {
 
         stage('Terraform Init') {
             steps {
-                sh 'terraform init -input=false'
+                sh 'terraform init'
             }
         }
 
@@ -37,12 +29,10 @@ pipeline {
         stage('Terraform Plan/Apply/Destroy') {
             steps {
                 script {
-                    if (params.ACTION == "plan") {
-                        sh 'terraform plan -input=false'
-                    } else if (params.ACTION == "apply") {
-                        sh 'terraform apply -auto-approve -input=false'
+                    if (params.ACTION == "apply") {
+                        sh 'terraform apply -auto-approve'
                     } else if (params.ACTION == "destroy") {
-                        sh 'terraform destroy -auto-approve -input=false'
+                        sh 'terraform destroy -auto-approve'
                     }
                 }
             }
