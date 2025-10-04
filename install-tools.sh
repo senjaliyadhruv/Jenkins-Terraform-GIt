@@ -8,15 +8,14 @@ sudo apt upgrade -y
 sudo apt install git -y
 
 #-------Java dependency for Jenkins------------
-sudo apt install openjdk-11-jdk -y
+sudo apt install openjdk-21-jdk -y
 
 #------------Jenkins install-------------
-wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo apt-key add -
-sudo sh -c 'echo deb https://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
-sudo apt update -y
-sudo apt install jenkins -y
-sudo systemctl enable jenkins
-sudo systemctl start jenkins
+sudo wget -O /usr/share/keyrings/jenkins-keyring.asc https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
+echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/" | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
+sudo apt-get update -y
+sudo apt-get install jenkins -y
+
 
 #------------------install terraform------------------
 sudo apt install -y gnupg software-properties-common curl

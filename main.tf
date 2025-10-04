@@ -1,6 +1,6 @@
 resource "aws_instance" "jenkins_ec2" {
   ami           = data.aws_ami.ubuntu.id
-  instance_type = "t2.micro" # free tier eligible
+  instance_type = "t2.medium" # free tier eligible
   #   key_name      = "your-keypair-name" # replace with your keypair
 
   user_data = file("install-tools.sh")
