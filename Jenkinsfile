@@ -14,25 +14,24 @@ pipeline {
                 sh 'terraform --version'
             }
         }
+        stage('Terraform init') {
+            steps {
+                sh 'terraform init'
+            }
+        }
         stage('Terraform validate') {
             steps {
-                dir('eks-terraform') {
                     sh 'terraform validate'
-                }
             }
         }
         stage('Terraform plan') {
             steps {
-                dir('eks-terraform') {
                     sh 'terraform plan'
-                }
             }
         }
         stage('Terraform apply/destroy') {
             steps {
-                dir('eks-terraform') {
                     sh "terraform ${params.ACTION} -auto-approve"
-                }
             }
         }
     }
