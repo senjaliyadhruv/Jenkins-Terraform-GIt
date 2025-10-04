@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     parameters {
-        choice(name: 'ACTION', choices: ['plan', 'apply', 'destroy'], description: 'Terraform action')
+        choice(name: 'ACTION', choices: ['apply', 'destroy'], description: 'Terraform action')
     }
 
     stages {
