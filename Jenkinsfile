@@ -14,13 +14,6 @@ pipeline {
                 sh 'terraform --version'
             }
         }
-        stage('Terraform init') {
-            steps {
-                dir('eks-terraform') {
-                    sh 'terraform init --reconfigure'
-                }
-            }
-        }
         stage('Terraform validate') {
             steps {
                 dir('eks-terraform') {
